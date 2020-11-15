@@ -3,39 +3,15 @@ using System.Collections.Generic;
 
 namespace MagicLib
 {
-    /// <summary>
-    /// Represents an Magic Card
-    /// </summary>
-    class Magic : ICard
+    class Magic : Card
     {
-        /// <summary>
-        /// Represents the magic's Colors
-        /// </summary>
-        public List<CardColor> CardColors => throw new NotImplementedException();
-
-        /// <summary>
-        /// Represents the magic's Name
-        /// </summary>
-        public string Name => throw new NotImplementedException();
-
-        /// <summary>
-        /// Represents the magic's Types
-        /// </summary>
-        public List<CardType> Types => throw new NotImplementedException();
-
-        /// <summary>
-        /// Represents the magic's Rarity
-        /// </summary>
-        public CardRarity Rarity => throw new NotImplementedException();
-
-        /// <summary>
-        /// Represents the magic's Image location
-        /// </summary>
-        public string Image => throw new NotImplementedException();
-
-        /// <summary>
-        /// Represents the magic's Actions
-        /// </summary>
-        public List<Action> Actions { get; set; }
+        public override List<CardColor> CardColors { get; set; }
+        public override string Name { get; set; }
+        public override List<CardType> Types { get; set; }
+        public override CardRarity Rarity { get; set; }
+        public override string Image { get; set; }
+        public override List<ManaType> Cost { get; set; }
+        public override List<Action> Actions { get; set; }
+        public override string Description { get; set; }
     }
 }
