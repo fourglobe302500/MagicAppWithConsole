@@ -2,22 +2,15 @@
 
 namespace MagicLib
 {
-    /// <summary>
-    /// Represents an Action that will happen
-    /// once certin conditions are met
-    /// </summary>
     public class Action
     {
-        /// <summary>
-        /// A List of all the conditions that must be met to the 
-        /// Action to occur
-        /// </summary>
-        public List<ActionType> Conditions { get; set; }
+        public Action(List<ActionType> conditions, List<Modifier> effects)
+        {
+            Conditions = conditions;
+            Effects = effects;
+        }
 
-        /// <summary>
-        /// A List of all Effects that will happen once the conditions
-        /// are met
-        /// </summary>
+        public List<ActionType> Conditions { get; set; }
         public List<Modifier> Effects { get; set; }
     }
 }

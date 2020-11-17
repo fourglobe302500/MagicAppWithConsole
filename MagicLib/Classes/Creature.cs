@@ -2,59 +2,51 @@
 
 namespace MagicLib
 {
-    /// <summary>
-    /// Represents an Creature Card
-    /// </summary>
-    public class Creature : ICard
+    public class Creature : Card
     {
-        /// <summary>
-        /// Represents the creature's Colors
-        /// </summary>
-        public List<CardColor> CardColors => throw new System.NotImplementedException();
-        
-        /// <summary>
-        /// Represents the creature's Name
-        /// </summary>
-        public string Name => throw new System.NotImplementedException();
-        
-        /// <summary>
-        /// Represents the creature's Types
-        /// </summary>
-        public List<CardType> Types => throw new System.NotImplementedException();
-        
-        /// <summary>
-        /// Represents the creature's Rarity
-        /// </summary>
-        public CardRarity Rarity => throw new System.NotImplementedException();
-
-        /// <summary>
-        /// Represents the creature's Image location
-        /// </summary>
-        public string Image => throw new System.NotImplementedException();
-        
-        /// <summary>
-        /// A List that represents the creature's total Cost
-        /// </summary>
-        public List<Mana> Cost { get; }
-        
-        /// <summary>
-        /// Represents the creature's Status
-        /// </summary>
+        public Creature(
+            string name,
+            List<CardColor> cardColors,
+            List<CardType> types,
+            CardRarity rarity,
+            string description,
+            List<ManaType> cost,
+            List<Action> actions,
+            Stats status,
+            List<CreatureSpecies> species) : this(0, name, cardColors, types, rarity, description, cost, actions, status, species)
+            {}
+        public Creature(
+            int iD,
+            string name,
+            List<CardColor> cardColors,
+            List<CardType> types,
+            CardRarity rarity,
+            string description,
+            List<ManaType> cost,
+            List<Action> actions,
+            Stats status,
+            List<CreatureSpecies> species)
+        {
+            ID = iD;
+            Name = name;
+            CardColors = cardColors;
+            Types = types;
+            Rarity = rarity;
+            Description = description;
+            Cost = cost;
+            Actions = actions;
+            Status = status;
+            Species = species;
+        }
+        public override int ID { get; set; }
+        public override string Name { get; set; }
+        public override List<CardColor> CardColors { get; set; }
+        public override List<CardType> Types { get; set; }
+        public override CardRarity Rarity { get; set; }
+        public override string Description { get; set; }
+        public override List<ManaType> Cost { get; set; }
+        public override List<Action> Actions { get; set; }
         public Stats Status { get; set; }
-        
-        /// <summary>
-        /// Represents the creature's Decription
-        /// </summary>
-        public string Description { get; set; }
-        
-        /// <summary>
-        /// A List that represents the creature's Species
-        /// </summary>
         public List<CreatureSpecies> Species { get; set; }
-        
-        /// <summary>
-        /// A List that represents the creature's Actions
-        /// </summary>
-        public List<Action> Actions { get; set; }
     }
 }

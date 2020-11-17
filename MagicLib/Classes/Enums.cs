@@ -1,8 +1,5 @@
 ﻿namespace MagicLib
 {
-    /// <summary>
-    /// Contains the Cards Colors for MagicLib.ICard
-    /// </summary>
     public enum CardColor
     {
         Blue,
@@ -13,9 +10,6 @@
         ColorLess
     }
 
-    /// <summary>
-    /// Contains the Cards Type for MagicLib.ICard
-    /// </summary>
     public enum CardType
     {
         InstantMagic,
@@ -28,9 +22,6 @@
         Terrain
     }
 
-    /// <summary>
-    /// Contains the Cards Rarity for MagicLib.ICard
-    /// </summary>
     public enum CardRarity
     {
         Common,
@@ -40,9 +31,6 @@
         Lengendary
     }
 
-    /// <summary>
-    /// Contains the Cards Species for MagicLib.Creatures
-    /// </summary>
     public enum CreatureSpecies
     {
         Ape,
@@ -74,17 +62,11 @@
         Cleric
     }
 
-    /// <summary>
-    /// Contains the Terrains Types for MagicLib.Terrain
-    /// </summary>
     public enum TerrainType
     {
         Basic
     }
 
-    /// <summary>
-    /// Contains the Mana Types for general use
-    /// </summary>
     public enum ManaType
     {
         Blue,
@@ -95,9 +77,6 @@
         ColorLess
     }
 
-    /// <summary>
-    /// Contains the Special Effects for MagicLib.Modifier
-    /// </summary>
     public enum SpecialEffects
     {
         Fly,
@@ -124,9 +103,6 @@
         Destroy
     }
 
-    /// <summary>
-    /// Contains the Acions Types for MagicLib.Actions
-    /// </summary>
     public enum ActionType
     {
         LastBreath,
