@@ -4,7 +4,7 @@ namespace MagicLib
 {
     public class Modifier
     {
-        public Modifier(int powerChanger, int hPChanger, List<SpecialEffects> specialEffects)
+        public Modifier(int powerChanger, int hPChanger, List<SpecialEffects> specialEffects = null)
         {
             PowerChanger = powerChanger;
             HPChanger = hPChanger;

@@ -21,29 +21,32 @@ namespace MagicLib.DataAcess.TextHelper
                 List<object> cols = line.Parse();
                 int ID = int.Parse((string)cols[0]);
                 string Name = (string)cols[1];
-                List<CardColor> colors = ((List<string>)cols[2]).ParseAsEnumArray<CardColor>();
-                List<CardType> types = ((List<string>)cols[3]).ParseAsEnumArray<CardType>();
-                CardRarity rarity = ((List<string>)cols[4]).ParseAsEnumArray<CardRarity>().First();
+                List<CardColor> colors = cols[2].ToListSimple<string>().ParseAsEnumArray<CardColor>();
+                List<CardType> types = cols[3].ToListSimple<string>().ParseAsEnumArray<CardType>();
+                CardRarity rarity = (CardRarity)Enum.Parse(typeof(CardRarity), (string)cols[4]);
                 string description = (string)cols[5];
-                List<ManaType> cost = ((List<string>)cols[6]).ParseAsEnumArray<ManaType>();
-                List<Action> actions = ((List<List<object>>)cols[7]).ParseAsAction();
-                Stats Status = ((List<List<object>>)cols[8]).ParseAsStats();
-                List<CreatureSpecies> species = ((List<string>)cols[9]).ParseAsEnumArray<CreatureSpecies>();
+                List<ManaType> cost = cols[6].ToListSimple<string>().ParseAsEnumArray<ManaType>();
+                List<Action> actions = cols[7].ToListSimple<List<object>>().ToList().ParseAsAction();
+                Stats Status = ((List<object>)cols[8]).ParseAsStats();
+                List<CreatureSpecies> species = cols[9].ToListSimple<string>().ParseAsEnumArray<CreatureSpecies>();
                 Creature c = new Creature(ID, Name, colors, types, rarity, description, cost, actions, Status, species);
                 output.Add(c);
             });
             return output;
         }
-
+        public static List<T> ToListSimple<T>(this object cast)
+        {
+            return ((List<object>)cast).Cast<T>().ToList();
+        }
         public static List<object> Parse(this string line)
         {
             List<string> rawOutput = new List<string>();
-            int position = -1;
+            int position = 0;
             int clean = 0;
-            while (++position < line.Length)
+            while (position < line.Length)
             {
                 string written = "";
-                while ((line[position] != ',' || clean != 0) && position < line.Length)
+                while (line[position] != ',' || clean != 0)
                 {
                     switch (line[position])
                     {
@@ -55,12 +58,15 @@ namespace MagicLib.DataAcess.TextHelper
                             break;
                     }
                     written += line[position++];
+                    if (position >= line.Length)
+                        break;
                 }
                 rawOutput.Add(written);
+                position++;
             }
             List<object> output = new List<object>();
-            rawOutput.ForEach(v => output.Add(v[0] == '[' || v[0] == '}' ? 
-                v.Substring(1, v.Length - 3).Parse() : v));
+            rawOutput.ForEach(v => output.Add(v[0] == '[' || v[0] == '{' ? 
+                v.Substring(1, v.Length - 2).Parse() : v));
             return output;
         }
 
@@ -69,24 +75,26 @@ namespace MagicLib.DataAcess.TextHelper
 
         public static List<Action> ParseAsAction(this List<List<object>> arr)
             =>   arr.Select(v => new Action(
-                                ((List<string>)v[0]).ParseAsEnumArray<ActionType>(), 
-                                ((List<List<object>>)v[1]).ParseAsModifier()))
+                                v[0].ToListSimple<string>().ParseAsEnumArray<ActionType>(), 
+                                v[1].ToListSimple<List<object>>().ParseAsModifier()))
                     .ToList();
 
         public static List<Modifier> ParseAsModifier(this List<List<object>> arr)
             =>   arr.Select(v => new Modifier(
                                 int.Parse((string)v[0]), 
                                 int.Parse((string)v[1]),
-                                ((List<string>)v[2]).ParseAsEnumArray<SpecialEffects>()))
+                                v[2].ToListSimple<string>().ParseAsEnumArray<SpecialEffects>()))
                     .ToList();
 
-        public static Stats ParseAsStats(this List<List<object>> arr)
-            =>   arr.Select(v => new Stats(
-                                int.Parse((string)v[0]),
-                                int.Parse((string)v[1]),
-                                ((List<List<object>>)v[2]).ParseAsModifier()))
-                    .ToList()
-                    .Single();
+        public static Stats ParseAsStats(this List<object> arr)
+        {
+            
+            Stats stat = new Stats(
+                int.Parse((string)arr[0]),
+                int.Parse((string)arr[1]),
+                (new List<object>[]{arr[2].ToListSimple<object>()}).ToList().ParseAsModifier());
+            return stat;
+        }
 
         public static List<string> ConvertToString(this List<Creature> arr)
             => arr.Select(c => c.ConvertToString()).ToList();
@@ -99,6 +107,7 @@ namespace MagicLib.DataAcess.TextHelper
             string output = $"{c.ID},{c.Name},[";
             c.CardColors.ForEach(color => output += color.ToString() + ",");
             output = output.Insert(output.Length - 1, "]");
+            output += "[";
             c.Types.ForEach(type => output += type.ToString() + ",");
             output = output.Insert(output.Length - 1, "]");
             output += $"{c.Rarity.ToString()},{c.Description},[";
@@ -109,25 +118,31 @@ namespace MagicLib.DataAcess.TextHelper
             {
                 output += "{[";
                 a.Conditions.ForEach(cond => output += cond.ToString() + ",");
-                output += "],[";
-                a.Effects.ForEach(effect =>
+                output = output.Insert(output.Length - 1, "]");
+                output += "[";
+                a.Effects?.ForEach(effect =>
                 {
                     output += "{" + $"{effect.PowerChanger},{effect.HPChanger},[";
-                    effect.SpecialEffects.ForEach(sp => output += sp.ToString());
-                    output += output.Insert(output.Length - 1, "]}");
+                    if (effect.SpecialEffects?.Count > 0)
+                        foreach (var sp in effect.SpecialEffects)
+                            output += sp.ToString() + ",";
+                    else 
+                        output += ",";
+                    output = output.Insert(output.Length - 1, "]}");
                 });
-                output += output.Insert(output.Length - 1, "]}");
+                output = output.Insert(output.Length - 1, "]}");
             });
-            output += $"],{{{c.Status.Power},{c.Status.HP},";
+            output = output.Insert(output.Length - 1, "]");
+            output += $"{{{c.Status.Power},{c.Status.HP},";
             c.Status.Modifiers.ForEach(mod =>
             {
                 output += "{" + $"{mod.PowerChanger},{mod.HPChanger},[";
-                mod.SpecialEffects.ForEach(sp => output += sp.ToString());
-                output += output.Insert(output.Length - 1, "]}");
+                mod.SpecialEffects.ForEach(sp => output += sp.ToString() + ",");
+                output = output.Insert(output.Length - 1, "]}}");
             });
             output += "[";
             c.Species.ForEach(spec => output += spec.ToString() + ",");
-            output = output.Insert(output.Length - 1, "]").Remove(output.Length - 1);
+            output = output.Insert(output.Length - 1, "]").Remove(output.Length);
             return output;
         }
     }

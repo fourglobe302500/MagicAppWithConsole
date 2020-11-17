@@ -20,7 +20,8 @@ namespace MagicLib.DataAcess
         public static Creature Register(this Creature newCreature)
         {
             List<Creature> creatures = CreaturesFile.FullFilePath().LoadFile().ConvertToCreature();
-            int currentID = creatures.Count < 0 ? creatures.OrderByDescending(x => x.ID).First().ID + 1 : 1;
+            int currentID = creatures.Count > 0 ?
+                currentID = creatures.OrderByDescending(x => x.ID).First().ID + 1 : 1;
             newCreature.ID = currentID;
             creatures.Add(newCreature);
             creatures.Save(CreaturesFile);

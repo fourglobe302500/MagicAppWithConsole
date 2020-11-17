@@ -5,6 +5,17 @@ namespace MagicLib
     public class Creature : Card
     {
         public Creature(
+            string name,
+            List<CardColor> cardColors,
+            List<CardType> types,
+            CardRarity rarity,
+            string description,
+            List<ManaType> cost,
+            List<Action> actions,
+            Stats status,
+            List<CreatureSpecies> species) : this(0, name, cardColors, types, rarity, description, cost, actions, status, species)
+            {}
+        public Creature(
             int iD,
             string name,
             List<CardColor> cardColors,
