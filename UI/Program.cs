@@ -1,4 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
+using MagicLib;
+using System.Linq;
+using MagicLib.DataAcess;
 
 namespace UI
 {
@@ -6,7 +10,11 @@ namespace UI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            int widthSize = 120;
+            int heightSize = 30;
+            Console.SetWindowSize(widthSize, heightSize);
+            Console.SetBufferSize(widthSize, heightSize);
+            Console.ForegroundColor = ConsoleColor.Cyan;
         }
     }
 }
